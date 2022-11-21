@@ -1,61 +1,39 @@
-import {useEffect ,useState} from 'react'
+import {useEffect ,useState ,useCallback} from 'react'
 
 
  export default function useGoogleToken(cb){
 
+  
+
     const  [token , setToken] =  useState("") ; 
+
     const [stat , setstat] = useState(null);
         const  [error , setError] =  useState(null);
+  
     const [scriptLoaded, setScriptLoaded] = useState(false);
     //  const [client , setClient] =  useState(null);
 // const  [client, setClient] = useState(null) ;
     useEffect(()=>{
-
-        
-
+      
+      // console.log(url);  
+           
         if (scriptLoaded) return undefined;
-           console.log(2);
-        
-      function initClient() {
+          //  console.log(2);
+       
+  function initClient() {
         if (!window.google || scriptLoaded) return;
 
+     
         setScriptLoaded(true);
         try{
+          // console.log(url,"dsdsdsdsdsdd");  
        const client =  window.google.accounts.oauth2.initTokenClient({
           client_id:process.env.REACT_APP_clientID,
           scope: "https://www.googleapis.com/auth/youtube.readonly",
-          callback: (tokenResponse) => {
-            // access_token = tokenResponse.access_token;
-            // setToken(tokenResponse.access_token)
-            // console.log(token)
-            cb([], true) ;
-            fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=25&mine=true&key=${process.env.REACT_APP_APIKEY}`, {
-          method:"GET" ,
-          headers:{
-            'Authorization' : 'Bearer ' + tokenResponse.access_token
+          callback: cb
+          
           }
-         
-        }).then((res)=>{
-
-          console.log(res);
-          if(!res.ok){
-              throw new Error("failed try again");
-          }
-        
-          return res.json()
-
-        }).then(res=>{
-
-            
-            cb(res["items"] , false) ;
-          console.log(res);
-        }).catch(err=>{
-          cb([], false) ;
-            setError(err) ; 
-        })
-            
-        }
-          },
+          
         );
          
         setstat(client);
@@ -85,7 +63,7 @@ import {useEffect ,useState} from 'react'
 
     
     
-    } , [scriptLoaded,cb])
+    } , [scriptLoaded   ])
     
       
     

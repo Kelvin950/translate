@@ -1,74 +1,98 @@
-import {useCallback, useRef,useState} from 'react'
-import  useGoogleToken from '../hooks/usegoogleToken';
+import { useState } from "react";
+import useGoogleToken from "../hooks/usegoogleToken";
 
+export default function InputComponent() {
+  const [input, setInput] = useState("");
+  const [response, setResponse] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-export default function   InputComponent(){
-const [input , setInput] =  useState(""); 
-const [response , setResponse]= useState([]) ;
-const  [loadingg , setLoading] =  useState(false);
-    const searchValue =  useRef("") ; 
+  const clb = (tokenResponse) => {
+    // const url = `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=25&mine=true&key=${process.env.REACT_APP_APIKEY}`;
 
-function change(){
-    console.log(searchValue.current.value)
-    setInput(searchValue.current.value);
-}
-const cb = (res , loading)=>{
-                 
-    setLoading(loading)
-    console.log(res)
-    setResponse(()=>{  
+    setLoading(true);
 
-        return  res
+    // cb([], true) ;
+    console.log(tokenResponse);
+
+    fetch(localStorage.getItem("input"), {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + tokenResponse.access_token,
+        Accept: "application/json",
+      },
+    })
+      .then((res) => {
+        console.log(res);
+        if (!res.ok) {
+          throw new Error("failed try again");
+        }
+
+        return res.json();
+      })
+      .then((res) => {
+        setLoading(false);
+        setResponse(() => {
+          return res["items"];
+        });
+
+        console.log(res);
+      })
+      .catch((err) => {
+        setLoading(false);
+        setError(err);
+
+        console.log(err);
+      });
+  };
+  let client;
+  useGoogleToken(clb)
+    .then((res) => {
+      client = res;
+      console.log(client);
+    })
+    .catch((err) => {
+      setError(err);
     });
-        console.log(loadingg);
-console.log(response);
 
- }
-    let client ; 
-    useGoogleToken(useCallback((res , loading)=>{
-               
-        setLoading(loading) ; 
-        setResponse(()=>{
-          return res;
-        })
+  function change(e) {
+    console.log(e.target.value);
+    setInput(e.target.value);
+    localStorage.setItem(
+      "input",
+      `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId=${e.target.value.trim()}&key=${
+        process.env.REACT_APP_APIKEY
+      }`
+     
+    );
+  }
 
-      } ,[setLoading , setResponse])).then(res=>{
-        
-        client =  res ; 
-        console.log(client);
-      }).catch(err=>{
-console.log(err);
+  function callRequest(e) {
+    e.preventDefault();
+    if (!input) return;
 
-      }) ; 
+    console.log(client);
 
- function callRequest(e){
-     e.preventDefault()
-     client.requestAccessToken();
-    //  setResponse(()=>{
+    client.requestAccessToken();
+  }
 
-    //     return [2];
-    // })
-    // // setLoading(true)
-    // console.log(response  , loading);
- }
+  return (
+    <div>
+      <form>
+        <input type="text" onChange={change} />
+        {loading ? (
+          <span>Loading</span>
+        ) : (
+          <button onClick={callRequest}>Search</button>
+        )}
+      </form>
+      {response.map((item ,index)=>{
+                     return <div key={index}>
+                      <p>{item.snippet.title}</p>
+                      </div>
 
-
-
-
- 
- if(response.length >0){
-     console.log(response)
- } 
-  
-    return <div>
-
-
-        <form>
-            <input  type="text"   onChange={change}   ref = {searchValue}  />
-            <button onClick={callRequest}>Search</button>
-            }
-        </form>
-
-
+                })}
+      {error && <p>error, Try again</p>}
     </div>
+  );
 }
