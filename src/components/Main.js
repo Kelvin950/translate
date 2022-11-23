@@ -4,7 +4,7 @@ import useGoogleToken from '../hooks/usegoogleToken';
 import querystring from 'query-string';
  
 
- function Main({setgoogle , spotify , google}){
+ function Main({ user , setgoogle , spotify , google}){
 // const [client, setClient]= useState({})
 
 // console.log(client ,"main");
@@ -156,8 +156,8 @@ let client;
           })
           console.log("done");
           console.log(spotifyUri);
-          return  axios.post(`https://api.spotify.com/v1/users/go1fxxkdj2kalc0m20glg9zma/playlists`,{
-            "name": "Translate",
+          return  axios.post(`https://api.spotify.com/v1/users/${user.id}/playlists`,{
+            "name": "Translatewq",
             "description": "Created with translate",
             "public": false
           } ,{
@@ -166,6 +166,29 @@ let client;
               "Content-Type":"application/json"
             }
           })
+        }).then((res)=>{
+          console.log(res);
+          const {id}  =  res.data;
+          
+          //
+          // return axios.post(`https://api.spotify.com/v1/playlists/${id}/tracks` ,{"uris": spotifyUri,
+          // "position": 0} ,{
+          //   headers:{
+          //     "Authorization":"Bearer "+ localStorage.getItem("spotifyAccessToken"),
+          
+          //   }
+          // }).then((res)=>{
+          //   console.log(res);
+
+          // })
+         return fetch(`https://api.spotify.com/v1/playlists/${id}/images` ,{
+           method:"PUT" , 
+           headers:{
+             "Authorization":"Bearer " + localStorage.getItem("spotifyAccessToken")
+           } ,
+           body:process.env.REACT_APP_IMGA
+         })
+          ;
         }).then((res)=>{
           console.log(res);
         })

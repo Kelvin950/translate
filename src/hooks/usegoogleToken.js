@@ -63,7 +63,7 @@ import {useEffect ,useState ,useCallback} from 'react'
 
     
     
-    } , [scriptLoaded   ])
+    } , [scriptLoaded  ,cb ])
     
       
     

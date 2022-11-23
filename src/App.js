@@ -8,7 +8,7 @@ import querystring from 'query-string';
 export default function App() {
 const [spotifyloaded ,setSpotifyLoaded ]= useState(false);
 const [googleLoaded  , setGoogleLoaded] =  useState(false) ; 
-const [userId , setUserId] =  useState("");
+const [userId , setUserId] =  useState({});
   useEffect(()=>{
 
 
@@ -20,30 +20,40 @@ const [userId , setUserId] =  useState("");
       while ( e = r.exec(q)) {
          hashParams[e[1]] = decodeURIComponent(e[2]);
       }
-      window.location.hash.s
+    
       return hashParams;
     }
 
 
-    const params =  getHashParams() ; 
+    const params = getHashParams() ; 
     if(Object.entries(params).length>0 && Object.entries(params)[0].includes("access_token")){
 
     const {access_token}=  params; 
              
-        axios.get("").then((res)=>{
+        axios.get("https://api.spotify.com/v1/me",{
+          headers:{
+            "Authorization":"Bearer "+access_token ,
+            "Content-Type":"Application/json"
+          }
+        }).then((res)=>{
           console.log(res);
+          
+          setUserId((prev)=>{
+            return {...prev ,...res.data }
+          })
+          
         }).catch(err=>{console.log(err);})
     setGoogleLoaded(true);
       setSpotifyLoaded(true);
     localStorage.setItem("spotifyAccessToken" , access_token);
    
-    console.log(googleLoaded);
+    // console.log(googleLoaded);
   }
-  });
+  }, [setGoogleLoaded ,setSpotifyLoaded]);
 
 
 
-
+console.log(userId);
 
   function setGoogleLoad(){
     
@@ -66,7 +76,7 @@ const [userId , setUserId] =  useState("");
     response_type: 'token',
    client_id: process.env.REACT_APP_SPOTIFYClIENTID,
   redirect_uri:process.env.REACT_APP_REDIRECTURL,
- scope:"playlist-modify-public playlist-modify-private"
+ scope:"playlist-modify-public playlist-modify-private ugc-image-upload"
   });
 
  window.location =  res;
@@ -75,7 +85,7 @@ const [userId , setUserId] =  useState("");
  }
 
 
-  
+  console.log(process.env.REACT_APP_IMGA);
 
 
   //  setS(client);
@@ -83,8 +93,8 @@ const [userId , setUserId] =  useState("");
     <Fragment>
 
    {spotifyloaded ||  <button onClick={spotify}>spotify</button>}
-     <InputComponent />
-      <Main setgoogle = {setGoogleLoad} spotify ={spotifyloaded} google={googleLoaded}/>
+     <InputComponent user={userId} />
+      <Main  user={userId} setgoogle = {setGoogleLoad} spotify ={spotifyloaded} google={googleLoaded}/>
     </Fragment>
   );
 }
