@@ -1,15 +1,24 @@
 import { useState, Fragment, useEffect } from "react";
-import useGoogleToken from "./hooks/usegoogleToken";
+
 import InputComponent from "./components/InputComponent";
 import Main from "./components/Main";
 import axios from 'axios';
 import querystring from 'query-string';
+import {useHistory} from "react-router-dom";
+
 
 export default function App() {
 const [spotifyloaded ,setSpotifyLoaded ]= useState(false);
 const [googleLoaded  , setGoogleLoaded] =  useState(false) ; 
 const [userId , setUserId] =  useState({});
-  useEffect(()=>{
+const [loadingMain, setLoadingMain] = useState(false);
+const [errorMain, setErrorMain] = useState(null);
+const history = useHistory();
+
+
+
+console.log(spotifyloaded);
+useEffect(()=>{
 
 
 
@@ -42,11 +51,15 @@ const [userId , setUserId] =  useState({});
             return {...prev ,...res.data }
           })
           
-        }).catch(err=>{console.log(err);})
-    setGoogleLoaded(true);
+        }).catch(err=>{console.log(err)
+          setSpotifyLoaded(false);
+          setGoogleLoaded(false);
+          setError("spotify Token expired.Require access again");
+          ;})
+    // setGoogleLoaded(true);
       setSpotifyLoaded(true);
     localStorage.setItem("spotifyAccessToken" , access_token);
-   
+   history.push('/')
     // console.log(googleLoaded);
   }
   }, [setGoogleLoaded ,setSpotifyLoaded]);
@@ -57,10 +70,28 @@ console.log(userId);
 
   function setGoogleLoad(){
     
-    setGoogleLoaded(false);
+    setGoogleLoaded(!googleLoaded);
     console.log(2);
-
+   
     
+  }
+  function setload(){
+    setLoadingMain(false);
+  }
+  function setLoading(){
+
+    setLoadingMain(!loadingMain); 
+  }
+
+  function setLoadingTofalse(){
+
+    if(loadingMain){
+      setLoadingMain(false);
+    }
+  }
+
+  function setError(msg){
+    setErrorMain(msg);
   }
 
 // function setSpotify(){
@@ -72,6 +103,7 @@ console.log(userId);
 
  async function spotify (){
 
+  setError(null);
   const res = 'https://accounts.spotify.com/authorize?'+ querystring.stringify({
     response_type: 'token',
    client_id: process.env.REACT_APP_SPOTIFYClIENTID,
@@ -79,6 +111,7 @@ console.log(userId);
  scope:"playlist-modify-public playlist-modify-private ugc-image-upload"
   });
 
+  
  window.location =  res;
 
 
@@ -86,15 +119,17 @@ console.log(userId);
 
 
   console.log(process.env.REACT_APP_IMGA);
-
+console.log(loadingMain);
 
   //  setS(client);
   return (
     <Fragment>
 
    {spotifyloaded ||  <button onClick={spotify}>spotify</button>}
-     <InputComponent user={userId} />
-      <Main  user={userId} setgoogle = {setGoogleLoad} spotify ={spotifyloaded} google={googleLoaded}/>
+      {  <InputComponent user={userId} />}
+      <Main  user={userId} setgoogle = {setGoogleLoad} setLoad = {setload} spotify ={spotifyloaded} google={googleLoaded}  setError={setError}  setLoading={setLoading} setLoadingTofalse = {setLoadingTofalse}/>
+      {loadingMain && <p>Loading</p>}
+      {errorMain && <p>{errorMain}</p>}
     </Fragment>
   );
 }

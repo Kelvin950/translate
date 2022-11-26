@@ -1,28 +1,20 @@
-import { useCallback, useState ,memo } from "react";
-import axios from  'axios';
-import useGoogleToken from '../hooks/usegoogleToken';
-import querystring from 'query-string';
- 
+import {useState, memo } from "react";
+import useGoogleToken from "../hooks/usegoogleToken";
+import helper  from '../util/helper' ; 
 
- function Main({ user , setgoogle , spotify , google}){
-// const [client, setClient]= useState({})
+function Main({ user, setgoogle, setLoad ,spotify, google ,setError,  setLoading,setLoadingTofalse }) {
+  const [responseMain, setResponseMain] = useState([]);
 
-// console.log(client ,"main");
-const [responseMain, setResponseMain] = useState([]);
-const [loadingMain, setLoadingMain] = useState(false);
-const [errorMain, setErrorMain] = useState(null);
-const clb = (tokenResponse) => {
+
+
+  const clb = (tokenResponse) => {
     const url = `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=25&mine=true&key=${process.env.REACT_APP_APIKEY}`;
-
-
-    
-      setLoadingMain(true);
-           
-
-    // cb([], true) ;
-    console.log(tokenResponse);
+ 
+    setLoading();
       
-    fetch( url, {
+    console.log(tokenResponse);
+
+    fetch(url, {
       method: "GET",
       headers: {
         Authorization: "Bearer " + tokenResponse.access_token,
@@ -38,201 +30,81 @@ const clb = (tokenResponse) => {
         return res.json();
       })
       .then((res) => {
-      //  console.log(setgoogle);
-                       
-      localStorage.setItem("googleAccessToken" ,tokenResponse.access_token)
-          setLoadingMain(false);
-          setResponseMain(() => {
-            return res["items"];
-
-        })
-
+        localStorage.setItem("googleAccessToken", tokenResponse.access_token);
+       
+        setResponseMain(() => {
+          return res["items"];
+        });
+        setgoogle();
+        
         console.log(res);
       })
       .catch((err) => {
-     
-          setLoadingMain(false);
-          setErrorMain(err);
-        
-
+        setgoogle();
         console.log(err);
-      })
-    
+        throw err;
+      }).finally(()=>{
+        setLoad();
+        console.log(2);
+      });
+      // setLoading();
   };
-let client; 
-    useGoogleToken(clb).then((res)=>{
-
-        client = res ; 
-        console.log(client);
-  }).catch((err)=>{
-      setErrorMain(err) ;
-  })
-  
-             
-        console.log(responseMain);
-           function  click(){
-    
-            
-             client.requestAccessToken();
-           console.log(client);
-           } 
-         
-    
-    async  function createPlaylist(){
-
-        try{
-
-          actions() ; 
-          
-          } catch(err){
-            console.log(err);
-          setErrorMain(err);
-        }
-
-          // if(res.status !==200)throw new Error("failed try again or grant access to spotify");
-          // console.log('add playlist now' ,res.data);
-        }
-
-        function getspotifyUri(uriArray , query){
- 
-
-          const songObj = uriArray.find(song=>{
-   
-               if(query.includes(song.name.replace(/\W|_/g ,""))){
-                 return song.uri ;
-               }else{
-                 return " ";
-               }
-               
-             })
-   
-             return songObj.uri
-             
-            }
+  let client;
+  useGoogleToken(clb)
+    .then((res) => {
+      client = res;
+      console.log(client);
+    })
+    .catch((err) => {
       
+      setError("Google Authentication failed try again");
+    });
 
-    async function actions(){
+  console.log(responseMain);
+  function click() {
+    client.requestAccessToken();
+    console.log(client);
+  }
 
-      const res1=  await axios.get("https://youtube.googleapis.com/youtube/v3/playlistItems" , {
-        params:{
-          part:"snippet" ,
-          maxResults:"50" ,
-          playlistId:"RD9EHAo6rEuas",
-          key:process.env.REACT_APP_APIKEY
-        } ,headers:{
-          "Authorization":"Bearer "+ localStorage.getItem("googleAccessToken"),
-          "Accept":"application/json"
-        }
-      } ) ; 
-      if(res1.status !==200)throw new Error("Failed try again");
-      let titles= [];
-          titles = res1.data.items.map((i)=>{
-           return i.snippet.title ;
-         }); 
-        //  res1.data.items.for(i=>{
-        //    titles.push(i.snippet.title) ;
-        //  })
-         console.log(titles);
-        // console.log(res1.data.items.for);
-        const promise =  titles.map((title)=>{
+ function createPlaylist(id ,user) {
+  
+      helper.actions(id ,user).then((res)=>{
+                 console.log(res);
+      }).catch(err=>{
+        console.log(err);
+        // if(err.response.status ===401 || err.response.status === 403){
 
-          return axios("https://api.spotify.com/v1/search", {
-            params:{
-              query:title.replace(/\W|_/g ,""), 
-              type:"track",
-              limit:5
-            } ,headers:{
-              "Authorization":"Bearer "+ localStorage.getItem("spotifyAccessToken") 
-            }
-          })
-        }) ;
-        console.log(promise);
-        const spotifyUri =  [];
-      Promise.all(promise).then((res)=>{
-          res.forEach(r=>{
-            console.log(r);
-            console.log(r.data.tracks.items ,r.config.params.query);
-             spotifyUri.push(getspotifyUri(r.data.tracks.items ,r.config.params.query))
-          })
-          console.log("done");
-          console.log(spotifyUri);
-          return  axios.post(`https://api.spotify.com/v1/users/${user.id}/playlists`,{
-            "name": "Translatewq",
-            "description": "Created with translate",
-            "public": false
-          } ,{
-            headers:{
-              "Authorization":"Bearer "+ localStorage.getItem("spotifyAccessToken"),
-              "Content-Type":"application/json"
-            }
-          })
-        }).then((res)=>{
-          console.log(res);
-          const {id}  =  res.data;
+        //   setError("Spotify or google Authentication failed.Sign in again");
+        //   setgoogle();
+
+
+        // }else if(err.response.status  === 400 || err.response.status === 404){
           
-          //
-          // return axios.post(`https://api.spotify.com/v1/playlists/${id}/tracks` ,{"uris": spotifyUri,
-          // "position": 0} ,{
-          //   headers:{
-          //     "Authorization":"Bearer "+ localStorage.getItem("spotifyAccessToken"),
-          
-          //   }
-          // }).then((res)=>{
-          //   console.log(res);
-
-          // })
-         return fetch(`https://api.spotify.com/v1/playlists/${id}/images` ,{
-           method:"PUT" , 
-           headers:{
-             "Authorization":"Bearer " + localStorage.getItem("spotifyAccessToken")
-           } ,
-           body:process.env.REACT_APP_IMGA
-         })
-          ;
-        }).then((res)=>{
-          console.log(res);
-        })
-        .catch(err=>{console.log(err); throw new Error("failed")})
-        // console.log(spotifyUri);
-
-      //  const searchwords =  titles.join("").split(" ").join("").replace(/\W|_/g ,"").replaceAll("OfficialMusicVideo", "")
-      //  ;
-      //  console.log(searchwords);
-          
-      //  const res2 =  await axios("https://api.spotify.com/v1/search" , {
-      //    params:{
-      //      query:searchwords, 
-      //      type:"track",
-      //      limit:50
-      //    } ,headers:{
-      //      "Authorization":"Bearer "+ localStorage.getItem("spotifyAccessToken") 
-      //    }
-      //  })
-                
-      //  console.log(res2.data);
-
-    }
-        
-    
-      return (
-        <div>
-          
-            { google &&   <button onClick ={click} > google</button>}
-          {responseMain.length>0  && <button onClick={createPlaylist}>Create playlist </button>}
-                {responseMain.map((item ,index)=>{
-                     return <div key={index}>
-                      <p>{item.snippet.title}</p>
-                      <button>Create playlist</button>
-                      </div>
-
-                })}
-                {loadingMain && <p>Loading</p>}
-                {errorMain && <p>error</p>}
-        </div>
-      )
-
-
-
+        //   setError("Bad input.Try again");
+             
+        // }
+        // else{
+        //   setError("Failed.Try again");
+        // }
+      })
+  
+  }
+ 
+  return (
+    <div>
+      {google || <button onClick={click}> google</button>}
+        <button onClick={createPlaylist.bind(this , "dsd" , user)}>create</button>
+      {google && responseMain.map((item, index) => {
+        return (
+          <div key={index}>
+            <p>{item.snippet.title}</p>
+            <button onClick={createPlaylist.bind(this , item.id , user)}>Create playlist</button>
+          </div>
+        );
+      })}
+   
+    </div>
+  );
 }
 
 export default memo(Main);

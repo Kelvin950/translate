@@ -43,7 +43,7 @@ export default function InputComponent() {
                       </div>
 
                 })}
-      {error && <p>error, Try again</p>}
+    
     </div>
   );
 }
