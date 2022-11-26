@@ -75,6 +75,10 @@ console.log(userId);
    
     
   }
+
+  function spotifyLoad(){
+    setSpotifyLoaded(false);
+  }
   function setload(){
     setLoadingMain(false);
   }
@@ -126,8 +130,8 @@ console.log(loadingMain);
     <Fragment>
 
    {spotifyloaded ||  <button onClick={spotify}>spotify</button>}
-      {  <InputComponent user={userId} />}
-      <Main  user={userId} setgoogle = {setGoogleLoad} setLoad = {setload} spotify ={spotifyloaded} google={googleLoaded}  setError={setError}  setLoading={setLoading} setLoadingTofalse = {setLoadingTofalse}/>
+      {  <InputComponent user={userId} setgoogle = {setGoogleLoad} setLoad = {setload} spotify ={spotifyLoad} google={googleLoaded}  setError={setError}/>}
+      <Main  user={userId} setgoogle = {setGoogleLoad} setLoad = {setload} spotify ={spotifyLoad} google={googleLoaded}  setError={setError}  setLoading={setLoading} setLoadingTofalse = {setLoadingTofalse}/>
       {loadingMain && <p>Loading</p>}
       {errorMain && <p>{errorMain}</p>}
     </Fragment>
