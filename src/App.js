@@ -4,7 +4,7 @@ import InputComponent from "./components/InputComponent";
 import Main from "./components/Main";
 import axios from 'axios';
 import querystring from 'query-string';
-import {useHistory} from "react-router-dom";
+
 
 
 export default function App() {
@@ -13,7 +13,7 @@ const [googleLoaded  , setGoogleLoaded] =  useState(false) ;
 const [userId , setUserId] =  useState({});
 const [loadingMain, setLoadingMain] = useState(false);
 const [errorMain, setErrorMain] = useState(null);
-const history = useHistory();
+
 
 
 
@@ -59,7 +59,7 @@ useEffect(()=>{
     // setGoogleLoaded(true);
       setSpotifyLoaded(true);
     localStorage.setItem("spotifyAccessToken" , access_token);
-   history.push('/')
+ 
     // console.log(googleLoaded);
   }
   }, [setGoogleLoaded ,setSpotifyLoaded]);
@@ -127,13 +127,13 @@ console.log(loadingMain);
 
   //  setS(client);
   return (
-    <Fragment>
+    <div className="center">
 
-   {spotifyloaded ||  <button onClick={spotify}>spotify</button>}
+   {localStorage.getItem("spotifyAccessToken") ||  <button onClick={spotify}>spotify</button>}
       {  <InputComponent user={userId} setgoogle = {setGoogleLoad} setLoad = {setload} spotify ={spotifyLoad} google={googleLoaded}  setError={setError}/>}
       <Main  user={userId} setgoogle = {setGoogleLoad} setLoad = {setload} spotify ={spotifyLoad} google={googleLoaded}  setError={setError}  setLoading={setLoading} setLoadingTofalse = {setLoadingTofalse}/>
       {loadingMain && <p>Loading</p>}
       {errorMain && <p>{errorMain}</p>}
-    </Fragment>
+    </div>
   );
 }
