@@ -34,6 +34,14 @@ useEffect(()=>{
     }
 
 
+function checkAccess(){
+  if(localStorage.getItem("spotifyAccessToken") || localStorage.setItem("googleAccessToken")){
+
+    return true;
+  }
+  return false;
+}
+
     const params = getHashParams() ; 
     if(Object.entries(params).length>0 && Object.entries(params)[0].includes("access_token")){
 
