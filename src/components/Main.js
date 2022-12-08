@@ -185,6 +185,8 @@ function Main({
          if(err.response.status ===401 || err.response.status === 403){
 
     setError("Spotify or google Authentication failed.Sign in again");
+    localStorage.removeItem("spotifyAccessToken");
+    localStorage.removeItem("googleAccessToken");
     setgoogle(); 
     spotify();
   }else if(err.response.status  === 400 || err.response.status === 404){

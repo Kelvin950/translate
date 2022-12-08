@@ -13,11 +13,21 @@ const [googleLoaded  , setGoogleLoaded] =  useState(false) ;
 const [userId , setUserId] =  useState({});
 const [loadingMain, setLoadingMain] = useState(false);
 const [errorMain, setErrorMain] = useState(null);
-
+const [login , setLogin] =  useState(false);
 
 
 
 console.log(spotifyloaded);
+function checkSpotifyLogin(){
+  if(localStorage.getItem("spotifyAccessToken")){
+           
+
+      setLogin(true);
+
+  }else{
+    setLogin(false);
+  }
+}
 useEffect(()=>{
 
 
@@ -34,13 +44,13 @@ useEffect(()=>{
     }
 
 
-function checkAccess(){
-  if(localStorage.getItem("spotifyAccessToken") || localStorage.setItem("googleAccessToken")){
+// function checkAccess(){
+//   if(localStorage.getItem("spotifyAccessToken") || localStorage.setItem("googleAccessToken")){
 
-    return true;
-  }
-  return false;
-}
+//     return true;
+//   }
+//   return false;
+// }
 
     const params = getHashParams() ; 
     if(Object.entries(params).length>0 && Object.entries(params)[0].includes("access_token")){
@@ -60,16 +70,19 @@ function checkAccess(){
           })
           
         }).catch(err=>{console.log(err)
-          setSpotifyLoaded(false);
-          setGoogleLoaded(false);
+          // setSpotifyLoaded(false);
+          // setGoogleLoaded(false);
           setError("spotify Token expired.Require access again");
           ;})
     // setGoogleLoaded(true);
-      setSpotifyLoaded(true);
+      // setSpotifyLoaded(true);
     localStorage.setItem("spotifyAccessToken" , access_token);
  
     // console.log(googleLoaded);
   }
+
+
+  checkSpotifyLogin();
   }, [setGoogleLoaded ,setSpotifyLoaded]);
 
 
@@ -137,9 +150,9 @@ console.log(loadingMain);
   return (
     <div className="center">
 
-   {localStorage.getItem("spotifyAccessToken") ||  <button onClick={spotify}>spotify</button>}
-      {  <InputComponent user={userId} setgoogle = {setGoogleLoad} setLoad = {setload} spotify ={spotifyLoad} google={googleLoaded}  setError={setError}/>}
-      <Main  user={userId} setgoogle = {setGoogleLoad} setLoad = {setload} spotify ={spotifyLoad} google={googleLoaded}  setError={setError}  setLoading={setLoading} setLoadingTofalse = {setLoadingTofalse}/>
+   {login ||  <button onClick={spotify}>spotify</button>}
+      {  <InputComponent user={userId} setgoogle = {setGoogleLoad} setLoad = {setload} spotify ={checkSpotifyLogin} google={googleLoaded}  setError={setError}/>}
+      <Main  user={userId} setgoogle = {setGoogleLoad} setLoad = {setload} spotify ={checkSpotifyLogin} google={googleLoaded}  setError={setError}  setLoading={setLoading} setLoadingTofalse = {setLoadingTofalse}/>
       {loadingMain && <p>Loading</p>}
       {errorMain && <p>{errorMain}</p>}
     </div>
