@@ -166,7 +166,7 @@ function findPlaylist(e) {
                 })
                 
                 }
-            {response.length >0  ??  <button>Create playlist</button>}
+            {response.length  &&  <button>Create playlist</button>}
     </div>
   );
 }
