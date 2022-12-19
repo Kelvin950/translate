@@ -4,6 +4,7 @@ import InputComponent from "./components/InputComponent";
 import Main from "./components/Main";
 import axios from 'axios';
 import querystring from 'query-string';
+import { useHistory } from "react-router-dom";
 
 
 
@@ -14,7 +15,7 @@ const [userId , setUserId] =  useState({});
 const [loadingMain, setLoadingMain] = useState(false);
 const [errorMain, setErrorMain] = useState(null);
 const [login , setLogin] =  useState(false);
-
+const history = useHistory();
 
 
 console.log(spotifyloaded);
@@ -77,7 +78,7 @@ useEffect(()=>{
     // setGoogleLoaded(true);
       // setSpotifyLoaded(true);
     localStorage.setItem("spotifyAccessToken" , access_token);
- 
+          history.push("/");
     // console.log(googleLoaded);
   }
 
