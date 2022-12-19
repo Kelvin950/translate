@@ -96,7 +96,7 @@ console.log(userId);
    
     
   }
-
+console.log(googleLoaded);
   function spotifyLoad(){
     setSpotifyLoaded(false);
   }
