@@ -2,8 +2,7 @@ import { useState, memo } from "react";
 import axios from  'axios';
 import useGoogleToken from "../hooks/usegoogleToken"; 
 import helper from "../util/helper";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+
 function Main({
   user,
   setgoogle,
@@ -217,11 +216,13 @@ function Main({
 
   return (
     <div>
+      
       {google || (
         <button
           className="w-full bg-white p-5  mb-10 text-xl md:text-3xl text-black   rounded-full hover:bg-orange-600 hover:text-black"
           onClick={click}
         >
+      
           google
         </button>
       )}
@@ -241,6 +242,7 @@ function Main({
                   key={index}
                 >
                   <p>{item.snippet.title}</p>
+
                   <button
                     className="p-3 w-full   text-xl md:text-3xl text-black   text-sky-400 hover:text-white"
                     onClick={createPlaylist.bind(this, item.id, user)}
