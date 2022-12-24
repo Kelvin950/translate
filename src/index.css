@@ -26,17 +26,38 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.res{
+  height: 25rem;
+}
 
 
-@media only screen and (min-width: 450px) {
+@media only screen and (min-width: 950px) {
   
 
   .des {
         
-    font-size: 1.4rem;
+    font-size: 2rem;
+   
     width: 50%;
     margin:0 auto ;
-    padding: 1.3rem;
+    padding: 1rem;
+    margin-top: 2.5rem;
+   
+
+  }
+}
+
+
+@media only screen and (min-width: 600px) {
+  
+
+  .des {
+        
+    font-size: 1.5rem;
+   
+    width: 70%;
+    margin:0 auto ;
+    padding: 1rem;
     margin-top: 2.5rem;
    
 

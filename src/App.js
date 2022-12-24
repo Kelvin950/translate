@@ -149,31 +149,40 @@ console.log(loadingMain);
 
   //  setS(client);
   return (
-    <div className="md:container md:mx-auto pl-2 ">
+    <div className="md:container md:mx-auto pt-20 pl-2 ">
       <Title />
-      {login || <button onClick={spotify}>spotify</button>}
-      {
-        <InputComponent
+      <div className="mb-6">
+        {login || (
+          <button
+            className="w-full bg-green-700 p-5 mt-3 mb-10 text-xl md:text-3xl   rounded-full hover:bg-sky-700 hover:text-black"
+            onClick={spotify}
+          >
+            spotify
+          </button>
+        )}
+        {
+          <InputComponent
+            user={userId}
+            setgoogle={setGoogleLoad}
+            setLoad={setload}
+            spotify={checkSpotifyLogin}
+            google={googleLoaded}
+            setError={setError}
+          />
+        }
+        <Main
           user={userId}
           setgoogle={setGoogleLoad}
           setLoad={setload}
           spotify={checkSpotifyLogin}
           google={googleLoaded}
           setError={setError}
+          setLoading={setLoading}
+          setLoadingTofalse={setLoadingTofalse}
         />
-      }
-      <Main
-        user={userId}
-        setgoogle={setGoogleLoad}
-        setLoad={setload}
-        spotify={checkSpotifyLogin}
-        google={googleLoaded}
-        setError={setError}
-        setLoading={setLoading}
-        setLoadingTofalse={setLoadingTofalse}
-      />
-      {loadingMain && <p>Loading</p>}
-      {errorMain && <p>{errorMain}</p>}
+        {loadingMain && <p>Loading</p>}
+        {errorMain && <p>{errorMain}</p>}
+      </div>
     </div>
   );
 }
