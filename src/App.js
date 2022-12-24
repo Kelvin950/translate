@@ -1,5 +1,5 @@
 import { useState, Fragment, useEffect } from "react";
-
+import  Title from './components/Title'
 import InputComponent from "./components/InputComponent";
 import Main from "./components/Main";
 import axios from 'axios';
@@ -149,11 +149,29 @@ console.log(loadingMain);
 
   //  setS(client);
   return (
-    <div className="center">
-
-   {login ||  <button onClick={spotify}>spotify</button>}
-      {  <InputComponent user={userId} setgoogle = {setGoogleLoad} setLoad = {setload} spotify ={checkSpotifyLogin} google={googleLoaded}  setError={setError}/>}
-      <Main  user={userId} setgoogle = {setGoogleLoad} setLoad = {setload} spotify ={checkSpotifyLogin} google={googleLoaded}  setError={setError}  setLoading={setLoading} setLoadingTofalse = {setLoadingTofalse}/>
+    <div className="md:container md:mx-auto pl-2 ">
+      <Title />
+      {login || <button onClick={spotify}>spotify</button>}
+      {
+        <InputComponent
+          user={userId}
+          setgoogle={setGoogleLoad}
+          setLoad={setload}
+          spotify={checkSpotifyLogin}
+          google={googleLoaded}
+          setError={setError}
+        />
+      }
+      <Main
+        user={userId}
+        setgoogle={setGoogleLoad}
+        setLoad={setload}
+        spotify={checkSpotifyLogin}
+        google={googleLoaded}
+        setError={setError}
+        setLoading={setLoading}
+        setLoadingTofalse={setLoadingTofalse}
+      />
       {loadingMain && <p>Loading</p>}
       {errorMain && <p>{errorMain}</p>}
     </div>
