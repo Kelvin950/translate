@@ -3,7 +3,7 @@ import axios  from 'axios';
 import helper from '../util/helper'
 import useGoogleToken from "../hooks/usegoogleToken";
 import { FcSearch } from "react-icons/fc";
-export default function InputComponent({user , setgoogle, setLoad , spotify , google,  setError}) {
+export default function InputComponent({user , setgoogle, setLoad , spotify , google,  setError , googleFalse}) {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState([
     {
@@ -414,7 +414,8 @@ function findPlaylist(e) {
       setError("Spotify or google Authentication failed.Sign in again");
       localStorage.removeItem("spotifyAccessToken");
     localStorage.removeItem("googleAccessToken");
-    setgoogle(); 
+    // setgoogle(); 
+    googleFalse();
     spotify();
     }else if(err.response.status  === 400 || err.response.status === 404){
   
@@ -522,8 +523,9 @@ function findPlaylist(e) {
   setError("Spotify or google Authentication failed.Sign in again");
   localStorage.removeItem("spotifyAccessToken");
   localStorage.removeItem("googleAccessToken");
-  setgoogle(); 
+  // setgoogle(); 
   spotify();
+  googleFalse()
 }else if(err.response.status  === 400 || err.response.status === 404){
 
   setError("Bad input.Try again");
@@ -553,10 +555,10 @@ else{
               <span>Loading</span>
             ) : (
               <button
-                className="w-full bg-white p-5  mb-10 text-xl md:text-3xl text-black   rounded-full outline-black ring-offset-2 ring ring-sky-600"
+                className="w-full  p-4  mb-10 text-xl md:text-3xl text-black   rounded-full border-none "
                 onClick={findPlaylist}
               >
-                <FcSearch/>
+                <FcSearch className="text-6xl" />
               </button>
             )}
           </div>

@@ -12,6 +12,7 @@ function Main({
   setError,
   setLoading,
   setLoadingTofalse,
+  googleFalse
 }) {
   const [responseMain, setResponseMain] = useState([]);
 
@@ -187,7 +188,7 @@ function Main({
     setError("Spotify or google Authentication failed.Sign in again");
     localStorage.removeItem("spotifyAccessToken");
     localStorage.removeItem("googleAccessToken");
-    setgoogle(); 
+    googleFalse();
     spotify();
   }else if(err.response.status  === 400 || err.response.status === 404){
 
@@ -224,9 +225,9 @@ function Main({
           <FcGoogle
             style={{ display: "inline" }}
             className="text-center text-black"
-          >
-            {" "}
-          </FcGoogle>
+         />
+            
+        
           oogle
         </button>
       )}

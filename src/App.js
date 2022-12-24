@@ -90,6 +90,11 @@ useEffect(()=>{
 
 console.log(userId);
 
+function setGoogleFalse(){
+  setGoogleLoaded(false);
+}
+console.log(googleLoaded , "jknfjernfjenijrf")
+
   function setGoogleLoad(){
     
     setGoogleLoaded(!googleLoaded);
@@ -172,6 +177,7 @@ console.log(loadingMain);
             spotify={checkSpotifyLogin}
             google={googleLoaded}
             setError={setError}
+            googleFalse={setGoogleFalse}
           />
         }
         <Main
@@ -183,6 +189,7 @@ console.log(loadingMain);
           setError={setError}
           setLoading={setLoading}
           setLoadingTofalse={setLoadingTofalse}
+          googleFalse={setGoogleFalse}
         />
         {loadingMain && <p>Loading</p>}
         {errorMain && <p>{errorMain}</p>}
