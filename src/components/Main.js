@@ -2,7 +2,7 @@ import { useState, memo } from "react";
 import axios from  'axios';
 import useGoogleToken from "../hooks/usegoogleToken"; 
 import helper from "../util/helper";
-
+import { FcGoogle } from "react-icons/fc";
 function Main({
   user,
   setgoogle,
@@ -216,14 +216,18 @@ function Main({
 
   return (
     <div>
-      
       {google || (
         <button
           className="w-full bg-white p-5  mb-10 text-xl md:text-3xl text-black   rounded-full hover:bg-orange-600 hover:text-black"
           onClick={click}
         >
-      
-          google
+          <FcGoogle
+            style={{ display: "inline" }}
+            className="text-center text-black"
+          >
+            {" "}
+          </FcGoogle>
+          oogle
         </button>
       )}
       {google && (
@@ -234,25 +238,27 @@ function Main({
             </h1>
           }
 
-          <ul className="res">
-            {responseMain.map((item, index) => {
-              return (
-                <li
-                  className="p-3 border-b-[0.01rem] text-xl md:text-2xl border-slate-400/10 border-solid text-sky-400"
-                  key={index}
-                >
-                  <p>{item.snippet.title}</p>
-
-                  <button
-                    className="p-3 w-full   text-xl md:text-3xl text-black   text-sky-400 hover:text-white"
-                    onClick={createPlaylist.bind(this, item.id, user)}
+          {google && (
+            <ul className="res">
+              {responseMain.map((item, index) => {
+                return (
+                  <li
+                    className="p-3 border-b-[0.01rem] text-xl md:text-2xl border-slate-400/10 border-solid text-sky-400"
+                    key={index}
                   >
-                    Create playlist
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+                    <p>{item.snippet.title}</p>
+
+                    <button
+                      className="p-3 w-full   text-xl md:text-3xl text-black   text-sky-400 hover:text-white"
+                      onClick={createPlaylist.bind(this, item.id, user)}
+                    >
+                      Create playlist
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       )}
     </div>

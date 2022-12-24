@@ -5,7 +5,7 @@ import Main from "./components/Main";
 import axios from 'axios';
 import querystring from 'query-string';
 import { useHistory } from "react-router-dom";
-
+import { GrSpotify } from "react-icons/gr";
 
 
 export default function App() {
@@ -157,6 +157,10 @@ console.log(loadingMain);
             className="w-full bg-green-700 p-5 mt-3 mb-10 text-xl md:text-3xl   rounded-full hover:bg-sky-700 hover:text-black"
             onClick={spotify}
           >
+            <GrSpotify
+              style={{ display: "inline" }}
+              className="text-center text-black text-5xl pr-1"
+            />
             spotify
           </button>
         )}

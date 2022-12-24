@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios  from 'axios';
 import helper from '../util/helper'
 import useGoogleToken from "../hooks/usegoogleToken";
-
+import { FcSearch } from "react-icons/fc";
 export default function InputComponent({user , setgoogle, setLoad , spotify , google,  setError}) {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState([
@@ -553,10 +553,10 @@ else{
               <span>Loading</span>
             ) : (
               <button
-                className="w-full bg-white p-5  mb-10 ttext-xl md:text-3xl text-black   rounded-full outline-black ring-offset-2 ring ring-sky-600"
+                className="w-full bg-white p-5  mb-10 text-xl md:text-3xl text-black   rounded-full outline-black ring-offset-2 ring ring-sky-600"
                 onClick={findPlaylist}
               >
-                Search
+                <FcSearch/>
               </button>
             )}
           </div>
