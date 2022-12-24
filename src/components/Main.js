@@ -2,7 +2,8 @@ import { useState, memo } from "react";
 import axios from  'axios';
 import useGoogleToken from "../hooks/usegoogleToken"; 
 import helper from "../util/helper";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 function Main({
   user,
   setgoogle,
