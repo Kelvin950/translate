@@ -544,7 +544,7 @@ else{
         <div class="flex ">
           <div class="w-5/6">
             <input
-              className=" bg-white p-5 w-full  mb-10 text-xl md:text-3xl text-black   rounded-full outline focus:outline-sky-600"
+              className=" bg-white p-5 w-full  mb-10 text-xl md:text-3xl text-black   rounded-full focus:outline-sky-600"
               type="text"
               placeholder="playlistId"
               onChange={change}
