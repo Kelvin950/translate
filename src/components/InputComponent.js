@@ -198,28 +198,30 @@ else{
           </div>
         </div>
       </form>
-      <div className="w-full  text-black text-3xl mb-10">
-        <ul className="res overflow-auto ">
-          {response.map((item, index) => {
-            return (
-              <li
-                className="p-7 pb-5 border-b-[0.01rem] text-xl md:text-2xl border-slate-400/10 border-solid text-sky-400"
-                key={index}
-              >
-                {item.snippet.title}
-              </li>
-            );
-          })}
-        </ul>
-        {response.length > 0 && (
-          <button
-            className="pt-6 w-full  mb-10 text-xl md:text-3xl text-black  pb-6 text-sky-400 hover:text-white"
-            onClick={createPlaylist}
-          >
-            Create playlist
-          </button>
-        )}
-      </div>
+      {response.length > 0 && (
+        <div className="w-full  text-black text-3xl mb-10">
+          <ul className="res overflow-auto ">
+            {response.map((item, index) => {
+              return (
+                <li
+                  className="p-7 pb-5 border-b-[0.01rem] text-xl md:text-2xl border-slate-400/10 border-solid text-sky-400"
+                  key={index}
+                >
+                  {item.snippet.title}
+                </li>
+              );
+            })}
+          </ul>
+          {response.length > 0 && (
+            <button
+              className="pt-6 w-full  mb-10 text-xl md:text-3xl text-black  pb-6 text-sky-400 hover:text-white"
+              onClick={createPlaylist}
+            >
+              Create playlist
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
