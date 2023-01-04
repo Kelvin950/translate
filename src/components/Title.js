@@ -5,7 +5,7 @@ export default function Title() {
         Translate
       </h1>
       <p className=" mt-6 mb-6  leading-5 p-10 pt-4 pb-4 leading-loose text-zinc-400  w-full md:w-21 text-center md:border-solid md:order-2 border-blue-500 rounded-lg  des">
-        A straightforward and quick program that makes that YouTube playlist,
+        A straightforward and quick program that translates that YouTube mix ,
         You are unable to play every time your phone goes to sleep, you switch
         to Instagram to follow your crush, or you go to Twitter to retweet
         something. You also save time by not having to manually add songs and

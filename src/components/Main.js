@@ -2,6 +2,8 @@ import { useState, memo } from "react";
 import axios from  'axios';
 import useGoogleToken from "../hooks/usegoogleToken"; 
 import helper from "../util/helper";
+  import { ToastContainer, toast } from "react-toastify";
+ import "react-toastify/dist/ReactToastify.css";
 import { FcGoogle } from "react-icons/fc";
 function Main({
   user,
