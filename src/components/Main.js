@@ -42,8 +42,7 @@ function Main({
       })
       .then((res) => {
         localStorage.setItem("googleAccessToken", tokenResponse.access_token);
-
-        setResponseMain(() => {
+     setResponseMain(() => {
           return res["items"];
         });
         setgoogle();
@@ -181,6 +180,7 @@ function Main({
       })
       .then((res) => {
         console.log(res);
+        
       })
       .catch((err) => {
         console.log(err.response.data);

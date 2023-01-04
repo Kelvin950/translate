@@ -6,7 +6,8 @@ import axios from 'axios';
 import querystring from 'query-string';
 import { useHistory } from "react-router-dom";
 import { GrSpotify } from "react-icons/gr";
-
+  import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
 const [spotifyloaded ,setSpotifyLoaded ]= useState(false);
@@ -191,8 +192,7 @@ console.log(loadingMain);
           setLoadingTofalse={setLoadingTofalse}
           googleFalse={setGoogleFalse}
         />
-        {loadingMain && <p>Loading</p>}
-        {errorMain && <p>{errorMain}</p>}
+             <ToastContainer/>
       </div>
     </div>
   );
