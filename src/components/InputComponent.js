@@ -3,6 +3,8 @@ import axios  from 'axios';
 import helper from '../util/helper'
 import useGoogleToken from "../hooks/usegoogleToken";
 import { FcSearch } from "react-icons/fc";
+  import { toast } from "react-toastify";
+  import "react-toastify/dist/ReactToastify.css";
 export default function InputComponent({user , setgoogle, setLoad , spotify , google,  setError , googleFalse}) {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState(
@@ -21,6 +23,19 @@ function findPlaylist(e) {
     if (!input) return;
         console.log(input); 
              
+
+        
+    const id1 = toast.loading("Please wait...", {
+      position: "top-right",
+      autoClose: false,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+
      axios.get(
           "https://youtube.googleapis.com/youtube/v3/playlistItems",
           {
@@ -36,7 +51,11 @@ function findPlaylist(e) {
             },
           }
         ).then(res=>{
-
+           toast.update(id1, {
+             render: "Done",
+             type: "success",
+             isLoading: false,
+           });
           setResponse(()=>{
             return res.data.items ;
           })
@@ -45,7 +64,13 @@ function findPlaylist(e) {
           // throw err.response.data;
            if(err.response.status ===401 || err.response.status === 403){
   
-      setError("Spotify or google Authentication failed.Sign in again");
+ 
+      
+             toast.update(id1, {
+               render: "Spotify or google Authentication failed.Sign in again",
+               type: "error",
+               isLoading: false,
+             });
       localStorage.removeItem("spotifyAccessToken");
     localStorage.removeItem("googleAccessToken");
     // setgoogle(); 
@@ -53,11 +78,20 @@ function findPlaylist(e) {
     spotify();
     }else if(err.response.status  === 400 || err.response.status === 404){
   
-      setError("Bad input.Try again");
+   
   
+             toast.update(id1, {
+               render: "Bad input.Try again",
+               type: "error",
+               isLoading: false,
+             });
     }
     else{
-      setError("Failed.Try again");
+      toast.update(id1, {
+        render: "Failed.Try again",
+        type: "error",
+        isLoading: false,
+      });
     }
   
         });

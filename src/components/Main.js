@@ -2,9 +2,10 @@ import { useState, memo } from "react";
 import axios from  'axios';
 import useGoogleToken from "../hooks/usegoogleToken"; 
 import helper from "../util/helper";
-  import { ToastContainer, toast } from "react-toastify";
+  import {  toast } from "react-toastify";
  import "react-toastify/dist/ReactToastify.css";
 import { FcGoogle } from "react-icons/fc";
+
 function Main({
   user,
   setgoogle,
@@ -21,7 +22,16 @@ function Main({
   const clb = (tokenResponse) => {
     const url = `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=25&mine=true&key=${process.env.REACT_APP_APIKEY}`;
 
-    setLoading();
+    const id = toast.loading("Please wait...", {
+     position: "top-right",
+     autoClose: false,
+     hideProgressBar: false,
+     closeOnClick: true,
+     pauseOnHover: true,
+     draggable: true,
+     progress: undefined,
+     theme: "dark",
+   });
 
     console.log(tokenResponse);
 
@@ -42,6 +52,12 @@ function Main({
       })
       .then((res) => {
         localStorage.setItem("googleAccessToken", tokenResponse.access_token);
+           toast.update(id, {
+             render: "Done",
+             type: "success",
+             isLoading: false, 
+             
+           });
      setResponseMain(() => {
           return res["items"];
         });
@@ -51,13 +67,11 @@ function Main({
       })
       .catch((err) => {
         setgoogle();
+         
         console.log(err);
         throw err;
       })
-      .finally(() => {
-        setLoad();
-        console.log(2);
-      });
+     
     // setLoading();
   };
 
@@ -68,7 +82,16 @@ function Main({
       console.log(client);
     })
     .catch((err) => {
-      setError("Google Authentication failed try again");
+      toast.error("Google Authentication failed try again", {
+       position: "top-right",
+       autoClose: false,
+       hideProgressBar: false,
+       closeOnClick: true,
+       pauseOnHover: true,
+       draggable: true,
+       progress: undefined,
+       theme: "dark",
+     });
     });
 
   console.log(responseMain);
@@ -78,6 +101,19 @@ function Main({
   }
 
   async function createPlaylist(id, user) {
+
+    
+    const id1 = toast.loading("Please wait...", {
+      position: "top-right",
+      autoClose: false,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+
     const res1 = await axios.get(
       "https://youtube.googleapis.com/youtube/v3/playlistItems",
       {
@@ -127,7 +163,7 @@ function Main({
           console.log(r);
           console.log(r.data.tracks.items, r.config.params.query);
           spotifyUri.push(
-            this.getspotifyUri(r.data.tracks.items, r.config.params.query)
+            helper.getspotifyUri(r.data.tracks.items, r.config.params.query)
           );
         });
         console.log("done");
@@ -180,25 +216,43 @@ function Main({
       })
       .then((res) => {
         console.log(res);
-        
+   toast.update(id1, {
+     render: "Done",
+     type: "success",
+     isLoading: false,
+   });
       })
       .catch((err) => {
-        console.log(err.response.data);
+        console.log(err);
         // throw err.response.data;
          if(err.response.status ===401 || err.response.status === 403){
 
-    setError("Spotify or google Authentication failed.Sign in again");
+             toast.update(id1, {
+               render: "Spotify or google Authentication failed.Sign in again",
+               type: "error",
+               isLoading: false,
+             });
+    
     localStorage.removeItem("spotifyAccessToken");
     localStorage.removeItem("googleAccessToken");
     googleFalse();
     spotify();
   }else if(err.response.status  === 400 || err.response.status === 404){
 
-    setError("Bad input.Try again");
-
+        toast.update(id1, {
+          render: "Bad input.Try again",
+          type: "error",
+          isLoading: false,
+        });
   }
   else{
-    setError("Failed.Try again");
+   
+   
+     toast.update(id1, {
+       render: "Failed.Try again",
+       type: "error",
+       isLoading: false,
+     });
   }
 
       });
