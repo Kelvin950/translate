@@ -23,15 +23,15 @@ function Main({
     const url = `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=25&mine=true&key=${process.env.REACT_APP_APIKEY}`;
 
     const id = toast.loading("Please wait...", {
-     position: "top-right",
-     autoClose: false,
-     hideProgressBar: false,
-     closeOnClick: true,
-     pauseOnHover: true,
-     draggable: true,
-     progress: undefined,
-     theme: "dark",
-   });
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
 
     console.log(tokenResponse);
 
@@ -83,15 +83,15 @@ function Main({
     })
     .catch((err) => {
       toast.error("Google Authentication failed try again", {
-       position: "top-right",
-       autoClose: false,
-       hideProgressBar: false,
-       closeOnClick: true,
-       pauseOnHover: true,
-       draggable: true,
-       progress: undefined,
-       theme: "dark",
-     });
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     });
 
   console.log(responseMain);
@@ -105,7 +105,7 @@ function Main({
     
     const id1 = toast.loading("Please wait...", {
       position: "top-right",
-      autoClose: false,
+      autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -227,7 +227,7 @@ function Main({
         // throw err.response.data;
          if(err.response.status ===401 || err.response.status === 403){
 
-             toast.update(id1, {
+             toast.error(id1, {
                render: "Spotify or google Authentication failed.Sign in again",
                type: "error",
                isLoading: false,
@@ -239,7 +239,7 @@ function Main({
     spotify();
   }else if(err.response.status  === 400 || err.response.status === 404){
 
-        toast.update(id1, {
+        toast.error(id1, {
           render: "Bad input.Try again",
           type: "error",
           isLoading: false,
@@ -248,7 +248,7 @@ function Main({
   else{
    
    
-     toast.update(id1, {
+     toast.error(id1, {
        render: "Failed.Try again",
        type: "error",
        isLoading: false,
