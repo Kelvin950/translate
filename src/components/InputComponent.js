@@ -1,30 +1,34 @@
 import { useState } from "react";
-import axios  from 'axios';
-import helper from '../util/helper'
+import axios from "axios";
+import helper from "../util/helper";
 import useGoogleToken from "../hooks/usegoogleToken";
 import { FcSearch } from "react-icons/fc";
-  import { toast } from "react-toastify";
-  import "react-toastify/dist/ReactToastify.css";
-export default function InputComponent({user , setgoogle, setLoad , spotify , google,  setError , googleFalse}) {
+import { toast } from "react-toastify";
+import { config } from "../config";
+import "react-toastify/dist/ReactToastify.css";
+
+export default function InputComponent({
+  user,
+  setgoogle,
+  setLoad,
+  spotify,
+  google,
+  setError,
+  googleFalse,
+}) {
   const [input, setInput] = useState("");
-  const [response, setResponse] = useState(
-  []);
+  const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(false);
 
-
-
   function change(e) {
-    console.log(e.target.value);
+   
     setInput(e.target.value);
-    
   }
-function findPlaylist(e) {
+  function findPlaylist(e) {
     e.preventDefault();
     if (!input) return;
-        console.log(input); 
-             
+    
 
-        
     const id1 = toast.loading("Please wait...", {
       position: "top-right",
       autoClose: 5000,
@@ -36,72 +40,60 @@ function findPlaylist(e) {
       theme: "light",
     });
 
-     axios.get(
-          "https://youtube.googleapis.com/youtube/v3/playlistItems",
-          {
-            params: {
-              part: "snippet",
-              maxResults: "50",
-              playlistId: input,
-              key: process.env.REACT_APP_APIKEY,
-            },
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("googleAccessToken"),
-              Accept: "application/json",
-            },
-          }
-        ).then(res=>{
-           toast.update(id1, {
-             render: "Done",
-             type: "success",
-             isLoading: false,
-           });
-          setResponse(()=>{
-            return res.data.items ;
-          })
-        }).catch(err=>{
-          console.log(err);
-          // throw err.response.data;
-           if(err.response.status ===401 || err.response.status === 403){
-  
- 
-      
-             toast.error(id1, {
-               render: "Spotify or google Authentication failed.Sign in again",
-               type: "error",
-               isLoading: false,
-             });
-      localStorage.removeItem("spotifyAccessToken");
-    localStorage.removeItem("googleAccessToken");
-    // setgoogle(); 
-    googleFalse();
-    spotify();
-    }else if(err.response.status  === 400 || err.response.status === 404){
-  
-   
-  
-             toast.error(id1, {
-               render: "Bad input.Try again",
-               type: "error",
-               isLoading: false,
-             });
-    }
-    else{
-      toast.error(id1, {
-        render: "Failed.Try again",
-        type: "error",
-        isLoading: false,
-      });
-    }
-  
+    axios
+      .get("https://youtube.googleapis.com/youtube/v3/playlistItems", {
+        params: {
+          part: "snippet",
+          maxResults: "50",
+          playlistId: input,
+          key: "AIzaSyDsOAHNXL3O34Ivv0H7GtaYINaQMNDgYiw",
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("googleAccessToken"),
+          Accept: "application/json",
+        },
+      })
+      .then((res) => {
+        toast.update(id1, {
+          render: "Done",
+          type: "success",
+          isLoading: false,
         });
+        setResponse(() => {
+          return res.data.items;
+        });
+      })
+      .catch((err) => {
+       
+        // throw err.response.data;
+        if (err.response.status === 401 || err.response.status === 403) {
+          toast.error(id1, {
+            render: "Spotify or google Authentication failed.Sign in again",
+            type: "error",
+            isLoading: false,
+          });
+          localStorage.removeItem("spotifyAccessToken");
+          localStorage.removeItem("googleAccessToken");
+          // setgoogle();
+          googleFalse();
+          spotify();
+        } else if (err.response.status === 400 || err.response.status === 404) {
+          toast.error(id1, {
+            render: "Bad input.Try again",
+            type: "error",
+            isLoading: false,
+          });
+        } else {
+          toast.error(id1, {
+            render: "Failed.Try again",
+            type: "error",
+            isLoading: false,
+          });
+        }
+      });
   }
 
-
-  function createPlaylist(){
-
-
-           
+  function createPlaylist() {
     const id1 = toast.loading("Please wait...", {
       position: "top-right",
       autoClose: 5000,
@@ -112,16 +104,15 @@ function findPlaylist(e) {
       progress: undefined,
       theme: "light",
     });
-    const spotifyUri = [];    
+    const spotifyUri = [];
     let titles = [];
-         
-    titles =response.map((item) => {
+
+    titles = response.map((item) => {
       return item.snippet.title;
     });
 
-    console.log(titles);
+  
 
-    
     const promise = titles.map((title) => {
       return axios("https://api.spotify.com/v1/search", {
         params: {
@@ -134,111 +125,148 @@ function findPlaylist(e) {
         },
       });
     });
-    console.log(promise);
-        Promise.all(promise)
-          .then((res) => {
-            res.forEach((r) => {
-              console.log(r);
-              console.log(r.data.tracks.items, r.config.params.query);
-              spotifyUri.push(
-                helper.getspotifyUri(r.data.tracks.items, r.config.params.query)
-              );
-            });
-            console.log("done");
-            console.log(spotifyUri);
-            return axios.post(
-              `https://api.spotify.com/v1/users/${user.id}/playlists`,
-              {
-                name: "Translatewq",
-                description: "Created with translate",
-                public: false,
+   
+    Promise.all(promise)
+      .then((res) => {
+        res.forEach((r) => {
+          
+          
+          spotifyUri.push(
+            helper.getspotifyUri(r.data.tracks.items, r.config.params.query)
+          );
+        });
+       
+        return axios.post(
+          `https://api.spotify.com/v1/users/${user.id}/playlists`,
+          {
+            name: "Translatewq",
+            description: "Created with translate",
+            public: false,
+          },
+          {
+            headers: {
+              Authorization:
+                "Bearer " + localStorage.getItem("spotifyAccessToken"),
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      })
+      .then((res) => {
+     
+        const { id } = res.data;
+
+        const promises = [
+          axios.post(
+            `https://api.spotify.com/v1/playlists/${id}/tracks`,
+            { uris: spotifyUri, position: 0 },
+            {
+              headers: {
+                Authorization:
+                  "Bearer " + localStorage.getItem("spotifyAccessToken"),
               },
+            }
+          ),
+          fetch(`https://api.spotify.com/v1/playlists/${id}/images`, {
+            method: "PUT",
+            headers: {
+              Authorization:
+                "Bearer " + localStorage.getItem("spotifyAccessToken"),
+            },
+            body:
+              Math.random() * 10 > Math.random() * 10
+                ? config.REACT_APP_IMGB
+                : undefined,
+          }),
+        ];
+
+        return Promise.all(promises);
+      })
+      .then((res) => {
+        // console.log(res);
+        setError("done");
+        toast.update(id1, {
+          render: "Done",
+          type: "success",
+          isLoading: false,
+        });
+        // console.log(res)
+      })
+      .catch((err) => {
+       
+
+        toast.dismiss(id1 , {
+          
+        })
+        
+        const status = err.response.data.error.status;
+      
+
+        // throw err.response.data;
+        if (status === 401 || status === 403) {
+          // toast.error(id2, {
+          //   render: "Spotify or google Authentication failed.Sign in again",
+          //   type: "error",
+          //   isLoading: false,
+          // });
+            const id2 = toast.error(
+              "Spotify or google Authentication failed.Sign in again",
               {
-                headers: {
-                  Authorization:
-                    "Bearer " + localStorage.getItem("spotifyAccessToken"),
-                  "Content-Type": "application/json",
-                },
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
               }
             );
-          })
-          .then((res) => {
-            console.log(res);
-            const { id } = res.data;
-
-            const promises = [
-              axios.post(
-                `https://api.spotify.com/v1/playlists/${id}/tracks`,
-                { uris: spotifyUri, position: 0 },
-                {
-                  headers: {
-                    Authorization:
-                      "Bearer " + localStorage.getItem("spotifyAccessToken"),
-                  },
-                }
-              ),
-              fetch(`https://api.spotify.com/v1/playlists/${id}/images`, {
-                method: "PUT",
-                headers: {
-                  Authorization:
-                    "Bearer " + localStorage.getItem("spotifyAccessToken"),
-                },
-                body:
-                  Math.random() * 10 > Math.random() * 10
-                    ? process.env.REACT_APP_IMGB
-                    : process.env.REACT_APP_IMGA,
-              }),
-            ];
-
-            return Promise.all(promises);
-          })
-          .then((res) => {
-            console.log(res);
-            setError("done");
-            toast.update(id1, {
-              render: "Done",
-              type: "success",
-              isLoading: false,
+          localStorage.removeItem("spotifyAccessToken");
+          localStorage.removeItem("googleAccessToken");
+          // setgoogle();
+          googleFalse();
+          spotify();
+        } else if (status === 400 || status === 404) {
+          // toast.error(id2, {
+          //   render: "Bad input.Try again",
+          //   type: "error",
+          //   isLoading: false,
+          // });
+            const id2 = toast.error("Bad input. Try again", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
             });
-          })
-          .catch((err) => {
-            console.log(err);
-            // throw err.response.data;
-            if (err.response.status === 401 || err.response.status === 403) {
-              toast.error(id1, {
-                render: "Spotify or google Authentication failed.Sign in again",
-                type: "error",
-                isLoading: false,
-              });
-              localStorage.removeItem("spotifyAccessToken");
-              localStorage.removeItem("googleAccessToken");
-              // setgoogle();
-              googleFalse();
-              spotify();
-            } else if (
-              err.response.status === 400 ||
-              err.response.status === 404
-            ) {
-              toast.error(id1, {
-                render: "Bad input.Try again",
-                type: "error",
-                isLoading: false,
-              });
-            } else {
-              toast.error(id1, {
-                render: "Failed.Try again",
-                type: "error",
-                isLoading: false,
-              });
-            }
-          });
-    
+        } else {
+          // toast.error(id2, {
+          //   render: "Failed.Try again",
+          //   type: "error",
+          //   isLoading: false,
+          // });
+            const id2 = toast.error("Failed. Try again", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            });
+        }
+      });
   }
   return (
     <div>
       <form>
-        <div class="flex ">
-          <div class="w-5/6">
+        <div className="flex ">
+          <div className="w-5/6">
             <input
               className=" bg-white p-5 w-full  mb-10 text-xl md:text-3xl text-black   rounded-full focus:outline-sky-600"
               type="text"
@@ -246,7 +274,7 @@ function findPlaylist(e) {
               onChange={change}
             />
           </div>
-          <div class="w-1/9">
+          <div className="w-1/9">
             {loading ? (
               <span>Loading</span>
             ) : (

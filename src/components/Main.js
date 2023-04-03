@@ -5,6 +5,7 @@ import helper from "../util/helper";
   import {  toast } from "react-toastify";
  import "react-toastify/dist/ReactToastify.css";
 import { FcGoogle } from "react-icons/fc";
+import {config}  from '../config';
 
 function Main({
   user,
@@ -20,7 +21,7 @@ function Main({
   const [responseMain, setResponseMain] = useState([]);
 
   const clb = (tokenResponse) => {
-    const url = `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=25&mine=true&key=${process.env.REACT_APP_APIKEY}`;
+    const url = `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=25&mine=true&key=AIzaSyDsOAHNXL3O34Ivv0H7GtaYINaQMNDgYiw`;
 
     const id = toast.loading("Please wait...", {
       position: "top-right",
@@ -33,7 +34,7 @@ function Main({
       theme: "light",
     });
 
-    console.log(tokenResponse);
+   
 
     fetch(url, {
       method: "GET",
@@ -43,7 +44,7 @@ function Main({
       },
     })
       .then((res) => {
-        console.log(res);
+        
         if (!res.ok) {
           throw new Error("failed try again");
         }
@@ -63,12 +64,12 @@ function Main({
         });
         setgoogle();
 
-        console.log(res);
+      
       })
       .catch((err) => {
         setgoogle();
          
-        console.log(err);
+        
         throw err;
       })
      
@@ -79,7 +80,7 @@ function Main({
   useGoogleToken(clb)
     .then((res) => {
       client = res;
-      console.log(client);
+     
     })
     .catch((err) => {
       toast.error("Google Authentication failed try again", {
@@ -94,10 +95,9 @@ function Main({
       });
     });
 
-  console.log(responseMain);
   function click() {
     client.requestAccessToken();
-    console.log(client);
+ 
   }
 
   async function createPlaylist(id, user) {
@@ -121,7 +121,7 @@ function Main({
           part: "snippet",
           maxResults: "50",
           playlistId: id,
-          key: process.env.REACT_APP_APIKEY,
+          key: "AIzaSyDsOAHNXL3O34Ivv0H7GtaYINaQMNDgYiw",
         },
         headers: {
           Authorization: "Bearer " + localStorage.getItem("googleAccessToken"),
@@ -141,8 +141,7 @@ function Main({
       return i.snippet.title;
     });
 
-    console.log(titles);
-
+  
     const promise = titles.map((title) => {
       return axios("https://api.spotify.com/v1/search", {
         params: {
@@ -155,19 +154,17 @@ function Main({
         },
       });
     });
-    console.log(promise);
+
     const spotifyUri = [];
     Promise.all(promise)
       .then((res) => {
         res.forEach((r) => {
-          console.log(r);
-          console.log(r.data.tracks.items, r.config.params.query);
+       
           spotifyUri.push(
             helper.getspotifyUri(r.data.tracks.items, r.config.params.query)
           );
         });
-        console.log("done");
-        console.log(spotifyUri);
+      
         return axios.post(
           `https://api.spotify.com/v1/users/${user.id}/playlists`,
           {
@@ -185,7 +182,7 @@ function Main({
         );
       })
       .then((res) => {
-        console.log(res);
+     
         const { id } = res.data;
 
         const promises = [
@@ -207,15 +204,15 @@ function Main({
             },
             body:
               Math.random() * 10 > Math.random() * 10
-                ? process.env.REACT_APP_IMGB
-                : process.env.REACT_APP_IMGA,
+                ? config.REACT_APP_IMGA
+                : config.REACT_APP_IMGB,
           }),
         ];
 
         return Promise.all(promises);
       })
       .then((res) => {
-        console.log(res);
+       
    toast.update(id1, {
      render: "Done",
      type: "success",
@@ -223,15 +220,32 @@ function Main({
    });
       })
       .catch((err) => {
-        console.log(err);
+      
+         toast.dismiss(id1, {});
+          
+             const status = err.response.data.error.status;
+           
         // throw err.response.data;
          if(err.response.status ===401 || err.response.status === 403){
 
-             toast.error(id1, {
-               render: "Spotify or google Authentication failed.Sign in again",
-               type: "error",
-               isLoading: false,
-             });
+            //  toast.error(id1, {
+            //    render: "Spotify or google Authentication failed.Sign in again",
+            //    type: "error",
+            //    isLoading: false,
+            //  });
+               const id2 = toast.error(
+                 "Spotify or google Authentication failed.Sign in again",
+                 {
+                   position: "top-right",
+                   autoClose: 5000,
+                   hideProgressBar: false,
+                   closeOnClick: true,
+                   pauseOnHover: true,
+                   draggable: true,
+                   progress: undefined,
+                   theme: "dark",
+                 }
+               );
     
     localStorage.removeItem("spotifyAccessToken");
     localStorage.removeItem("googleAccessToken");
@@ -239,20 +253,29 @@ function Main({
     spotify();
   }else if(err.response.status  === 400 || err.response.status === 404){
 
-        toast.error(id1, {
-          render: "Bad input.Try again",
-          type: "error",
-          isLoading: false,
-        });
+      const id2 = toast.error("Bad input. Try again", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
   }
   else{
    
-   
-     toast.error(id1, {
-       render: "Failed.Try again",
-       type: "error",
-       isLoading: false,
-     });
+    const id2 = toast.error("Failed. Try again", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
   }
 
       });

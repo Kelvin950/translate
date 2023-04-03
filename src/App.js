@@ -19,7 +19,7 @@ const [login , setLogin] =  useState(false);
 const history = useHistory();
 
 
-console.log(spotifyloaded);
+// console.log(spotifyloaded);
 function checkSpotifyLogin(){
   if(localStorage.getItem("spotifyAccessToken")){
            
@@ -65,7 +65,7 @@ useEffect(()=>{
             "Content-Type":"Application/json"
           }
         }).then((res)=>{
-          console.log(res);
+          // console.log(res);
           
           setUserId((prev)=>{
             return {...prev ,...res.data }
@@ -89,21 +89,21 @@ useEffect(()=>{
 
 
 
-console.log(userId);
+// console.log(userId);
 
 function setGoogleFalse(){
   setGoogleLoaded(false);
 }
-console.log(googleLoaded , "jknfjernfjenijrf")
+// console.log(googleLoaded , "jknfjernfjenijrf")
 
   function setGoogleLoad(){
     
     setGoogleLoaded(!googleLoaded);
-    console.log(2);
+    // console.log(2);
    
     
   }
-console.log(googleLoaded);
+// console.log(googleLoaded);
   function spotifyLoad(){
     setSpotifyLoaded(false);
   }
@@ -136,12 +136,14 @@ console.log(googleLoaded);
  async function spotify (){
 
   setError(null);
-  const res = 'https://accounts.spotify.com/authorize?'+ querystring.stringify({
-    response_type: 'token',
-   client_id: process.env.REACT_APP_SPOTIFYClIENTID,
-  redirect_uri:process.env.REACT_APP_REDIRECTURL,
- scope:"playlist-modify-public playlist-modify-private ugc-image-upload"
-  });
+  const res =
+    "https://accounts.spotify.com/authorize?" +
+    querystring.stringify({
+      response_type: "token",
+      client_id: "eab188e5624d4bdbb58a251580504828",
+      redirect_uri: "http://localhost:3000",
+      scope: "playlist-modify-public playlist-modify-private ugc-image-upload",
+    });
 
   
  window.location =  res;
@@ -150,8 +152,8 @@ console.log(googleLoaded);
  }
 
 
-  console.log(process.env.REACT_APP_IMGA);
-console.log(loadingMain);
+//   console.log(process.env.REACT_APP_IMGA);
+// console.log(loadingMain);
 
   //  setS(client);
   return (

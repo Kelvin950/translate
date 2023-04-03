@@ -27,14 +27,12 @@ import {useEffect ,useState ,useCallback} from 'react'
         setScriptLoaded(true);
         try{
           // console.log(url,"dsdsdsdsdsdd");  
-       const client =  window.google.accounts.oauth2.initTokenClient({
-          client_id:process.env.REACT_APP_clientID,
-          scope: "https://www.googleapis.com/auth/youtube.readonly",
-          callback: cb
-          
-          }
-          
-        );
+       const client = window.google.accounts.oauth2.initTokenClient({
+         client_id:
+           "477099634779-j9mlarioe4s2eao5k91kfgkejlvg6bnf.apps.googleusercontent.com",
+         scope: "https://www.googleapis.com/auth/youtube.readonly",
+         callback: cb,
+       });
          
         setstat(client);
         }catch
